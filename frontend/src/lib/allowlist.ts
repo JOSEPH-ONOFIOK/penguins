@@ -1,10 +1,17 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
+import { TASK_IDS } from "./tasks";
+
 export type AllowlistEntry = {
+  /** Position in line, assigned on submission and never reused. */
+  position: number;
   address: string;
   handle: string | null;
   email: string | null;
+  tasks: string[];
+  /** Entries are reviewed by hand, so nothing is confirmed on submission. */
+  status: "pending";
   createdAt: string;
 };
 
@@ -12,6 +19,7 @@ export type SignupInput = {
   address?: unknown;
   handle?: unknown;
   email?: unknown;
+  tasks?: unknown;
 };
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -32,15 +40,15 @@ export class ValidationError extends Error {
 }
 
 /** Normalizes and validates raw form input into an entry ready to persist. */
-export function parseSignup(input: SignupInput): AllowlistEntry {
+export function parseSignup(input: SignupInput): Omit<AllowlistEntry, "position"> {
   const rawAddress = typeof input.address === "string" ? input.address.trim() : "";
   if (!ADDRESS_RE.test(rawAddress)) {
     throw new ValidationError("address", "Enter a valid wallet address (0x + 40 hex characters).");
   }
 
   const rawHandle = typeof input.handle === "string" ? input.handle.trim() : "";
-  if (rawHandle && !HANDLE_RE.test(rawHandle)) {
-    throw new ValidationError("handle", "Handles are up to 15 letters, numbers, or underscores.");
+  if (!HANDLE_RE.test(rawHandle)) {
+    throw new ValidationError("handle", "Enter the X handle you completed the tasks with.");
   }
 
   const rawEmail = typeof input.email === "string" ? input.email.trim() : "";
@@ -48,10 +56,18 @@ export function parseSignup(input: SignupInput): AllowlistEntry {
     throw new ValidationError("email", "Enter a valid email address.");
   }
 
+  const rawTasks = Array.isArray(input.tasks) ? input.tasks.filter((id) => typeof id === "string") : [];
+  const missing = TASK_IDS.filter((id) => !rawTasks.includes(id));
+  if (missing.length > 0) {
+    throw new ValidationError("tasks", "Complete every task before submitting your entry.");
+  }
+
   return {
     address: rawAddress.toLowerCase(),
-    handle: rawHandle ? rawHandle.replace(/^@/, "").toLowerCase() : null,
+    handle: rawHandle.replace(/^@/, "").toLowerCase(),
     email: rawEmail ? rawEmail.toLowerCase() : null,
+    tasks: [...TASK_IDS],
+    status: "pending",
     createdAt: new Date().toISOString(),
   };
 }
@@ -86,16 +102,21 @@ export async function findEntry(address: string): Promise<AllowlistEntry | null>
   return entries.find((entry) => entry.address === key) ?? null;
 }
 
-/** Adds an entry, keeping one row per wallet. `created` is false when the wallet was already on the list. */
+/**
+ * Adds an entry, keeping one row per wallet. `created` is false when the wallet
+ * already has a place in line, in which case the original entry is returned.
+ */
 export async function addEntry(
-  entry: AllowlistEntry,
+  candidate: Omit<AllowlistEntry, "position">,
 ): Promise<{ created: boolean; entry: AllowlistEntry; total: number }> {
   const entries = await readAll();
-  const existing = entries.find((row) => row.address === entry.address);
+  const existing = entries.find((row) => row.address === candidate.address);
   if (existing) {
     return { created: false, entry: existing, total: entries.length };
   }
 
+  const highest = entries.reduce((max, row) => Math.max(max, row.position ?? 0), 0);
+  const entry: AllowlistEntry = { ...candidate, position: highest + 1 };
   entries.push(entry);
   await writeAll(entries);
   return { created: true, entry, total: entries.length };

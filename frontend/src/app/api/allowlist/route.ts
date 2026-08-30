@@ -40,7 +40,7 @@ export async function GET(request: Request) {
   return NextResponse.json({ total: await countEntries() });
 }
 
-/** POST /api/allowlist. Claim a spot. Idempotent per wallet. */
+/** POST /api/allowlist. Submit an entry for review. Idempotent per wallet. */
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -57,9 +57,11 @@ export async function POST(request: Request) {
         created,
         total,
         entry,
+        position: entry.position,
+        status: entry.status,
         message: created
-          ? "You're on the allowlist."
-          : "This wallet is already on the allowlist.",
+          ? "Entry received. Your entry will be reviewed."
+          : "This wallet already has an entry in review.",
       },
       { status: created ? 201 : 200 },
     );

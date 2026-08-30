@@ -7,14 +7,25 @@ export const COLLECTION = {
   allowlistPerWallet: 1,
 } as const;
 
-/** Original full-resolution art, used for DOM imagery. */
+/**
+ * Outbound links. Swap the placeholders once the real destinations exist:
+ * OpenSea needs the collection slug, and mint points at the OpenSea drop for now.
+ */
+export const LINKS = {
+  x: "https://x.com/hoodguins",
+  opensea: "https://opensea.io/",
+  mint: "https://opensea.io/",
+} as const;
+
+/**
+ * Mint art. Honorary guins are deliberately absent: they are not part of the
+ * 1000 supply and should never appear in the collection previews.
+ */
 export const ART = [
   "/Untitled680_20260828072252.png",
   "/Untitled680_20260828083906.png",
   "/Untitled684_20260822032624.png",
   "/Untitled685_20260822035755.png",
-  "/Untitled686_20260825044516.png",
-  "/Untitled688_20260825050229.png",
   "/Untitled689_20260825053718.png",
   "/Untitled691_20260825055930.png",
 ] as const;
@@ -27,8 +38,18 @@ export const TEXTURES = [
   "/tex/guin-04.webp",
   "/tex/guin-05.webp",
   "/tex/guin-06.webp",
-  "/tex/guin-07.webp",
-  "/tex/guin-08.webp",
 ] as const;
 
 export const BANNER = "/1500x500.jpeg";
+
+/** Post-mint token section. Copy supplied by the team, kept verbatim. */
+export const TOKEN = {
+  ticker: "$RPENG",
+  kicker: "Coming after mint",
+  tagline: "The token powering The Cold Block.",
+  body: `After the H00dguins mint, $RPENG will introduce a new layer to the ecosystem through H00dguin staking, rewards, character progression, ecosystem access and future experiences.`,
+  loop: ["Hold", "Stake", "Earn", "Upgrade"],
+  footnote:
+    "Full $RPENG mechanics and tokenomics will be announced after mint and before token activation.",
+  status: "Coming soon",
+} as const;

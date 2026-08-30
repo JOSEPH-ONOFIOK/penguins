@@ -1,14 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
-import AllowlistForm from "@/components/AllowlistForm";
 import ArtMarquee from "@/components/ArtMarquee";
 import IceCube from "@/components/IceCube";
+import LiveFeed from "@/components/LiveFeed";
 import TiltCard from "@/components/TiltCard";
 import SceneMount from "@/components/three/SceneMount";
-import { ART, BANNER, COLLECTION } from "@/lib/collection";
-import { countEntries } from "@/lib/allowlist";
-
-export const dynamic = "force-dynamic";
+import { ART, COLLECTION, LINKS, TOKEN } from "@/lib/collection";
 
 const FACTS = [
   { label: "Supply", value: COLLECTION.supply.toLocaleString(), note: "guins drawn by hand" },
@@ -17,24 +15,7 @@ const FACTS = [
   { label: "Per wallet", value: `${COLLECTION.allowlistPerWallet} spot`, note: "one wallet, one guin" },
 ];
 
-const STEPS = [
-  {
-    title: "Drop your wallet",
-    body: `Paste the address you will mint from on ${COLLECTION.chain}. One spot per wallet, no exceptions.`,
-  },
-  {
-    title: "Stay frosty",
-    body: "Leave a handle or email and you get the mint window before it goes public.",
-  },
-  {
-    title: "Mint your guin",
-    body: `Allowlist wallets get first claim on the ${COLLECTION.supply} supply. Whatever is left opens to everyone.`,
-  },
-];
-
-export default async function Home() {
-  const total = await countEntries();
-
+export default function Home() {
   return (
     <div className="relative z-10">
       <header className="sticky top-0 z-30 border-b border-ice-100/10 bg-night-900/60 backdrop-blur-xl">
@@ -43,19 +24,27 @@ export default async function Home() {
             h00d<span className="text-lime">guins</span>
           </span>
           <div className="hidden items-center gap-8 text-xs uppercase tracking-[0.2em] text-ice-300 sm:flex">
+            <a className="transition hover:text-ice-050" href="#rpeng">
+              {TOKEN.ticker}
+            </a>
             <a className="transition hover:text-ice-050" href="#collection">
               Collection
             </a>
-            <a className="transition hover:text-ice-050" href="#how">
-              How it works
+            <a
+              className="transition hover:text-ice-050"
+              href={LINKS.opensea}
+              target="_blank"
+              rel="noreferrer"
+            >
+              OpenSea
             </a>
           </div>
-          <a
-            href="#allowlist"
+          <Link
+            href="/allowlist"
             className="shrink-0 rounded-full border border-lime/40 bg-lime/10 px-3.5 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-lime transition hover:bg-lime/20 sm:px-4 sm:text-xs sm:tracking-[0.18em]"
           >
             Allowlist
-          </a>
+          </Link>
         </nav>
       </header>
 
@@ -86,43 +75,66 @@ export default async function Home() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <a
-                href="#allowlist"
+              <Link
+                href="/allowlist"
                 className="rounded-xl bg-lime px-6 py-4 text-center text-sm font-semibold text-night-900 transition hover:brightness-110 sm:py-3.5"
               >
                 Claim your spot
-              </a>
+              </Link>
               <a
-                href="#collection"
+                href={LINKS.mint}
+                target="_blank"
+                rel="noreferrer"
                 className="rounded-xl border border-ice-100/20 px-6 py-4 text-center text-sm font-semibold text-ice-100 transition hover:border-ice-100/50 hover:bg-ice-100/5 sm:py-3.5"
               >
-                See the colony
+                Mint on OpenSea
               </a>
             </div>
 
-            <dl className="mt-10 grid max-w-md grid-cols-2 gap-x-8 gap-y-5 sm:mt-12">
-              <div>
-                <dt className="text-[11px] uppercase tracking-[0.22em] text-ice-500">Supply</dt>
-                <dd className="font-mono text-2xl text-ice-050">{COLLECTION.supply}</dd>
-              </div>
-              <div>
-                <dt className="text-[11px] uppercase tracking-[0.22em] text-ice-500">Claimed</dt>
-                <dd className="font-mono text-2xl text-lime">{total}</dd>
-              </div>
-            </dl>
+            <div className="mt-10 max-w-sm sm:mt-12">
+              <LiveFeed />
+            </div>
           </div>
         </div>
       </section>
 
       <ArtMarquee />
 
+      {/* Post-mint token */}
+      <section id="rpeng" className="relative mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <TiltCard className="frost overflow-hidden rounded-3xl p-6 sm:p-10" glare={false}>
+          <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-ice-500">
+            {TOKEN.kicker}
+          </p>
+          <h2 className="mt-3 text-[clamp(2rem,9vw,3rem)] font-semibold tracking-tight text-lime">
+            {TOKEN.ticker}
+          </h2>
+          <p className="mt-4 text-lg text-ice-050">{TOKEN.tagline}</p>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ice-300">{TOKEN.body}</p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-2">
+            {TOKEN.loop.map((step, index) => (
+              <span key={step} className="flex items-center gap-2">
+                <span className="rounded-full border border-ice-100/15 bg-night-800/60 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-ice-100">
+                  {step}
+                </span>
+                {index < TOKEN.loop.length - 1 && <span className="text-ice-500">→</span>}
+              </span>
+            ))}
+          </div>
+
+          <p className="mt-8 max-w-2xl text-xs leading-relaxed text-ice-500">{TOKEN.footnote}</p>
+          <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.3em] text-lime/70">
+            {TOKEN.status}
+          </p>
+        </TiltCard>
+      </section>
+
       {/* Collection */}
-      <section id="collection" className="relative mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+      <section id="collection" className="relative mx-auto max-w-6xl px-5 pb-16 sm:px-6 sm:pb-24">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-lime">
-              The colony
-            </p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-lime">The colony</p>
             <h2 className="mt-3 text-[clamp(1.75rem,7vw,2.25rem)] font-semibold tracking-tight text-ice-050 sm:text-4xl">
               {COLLECTION.supply} guins, one glacier
             </h2>
@@ -133,7 +145,7 @@ export default async function Home() {
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
           {ART.map((src, index) => (
             <TiltCard key={src} className="group frost overflow-hidden rounded-3xl">
               <div className="relative aspect-square">
@@ -141,7 +153,7 @@ export default async function Home() {
                   src={src}
                   alt={`h00dguin #${index + 1}`}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 640px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
@@ -154,7 +166,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Facts + spinning cube */}
+      {/* Facts and spinning cube */}
       <section className="relative mx-auto max-w-6xl px-5 pb-16 sm:px-6 sm:pb-24">
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-12">
           <div className="grid grid-cols-2 gap-3 sm:gap-5">
@@ -176,73 +188,44 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="how" className="relative mx-auto max-w-6xl px-5 pb-16 sm:px-6 sm:pb-24">
-        <h2 className="text-[clamp(1.75rem,7vw,2.25rem)] font-semibold tracking-tight text-ice-050 sm:text-4xl">
-          How the allowlist works
-        </h2>
-        <ol className="mt-8 grid gap-4 sm:mt-10 sm:gap-6 md:grid-cols-3">
-          {STEPS.map((step, index) => (
-            <li key={step.title}>
-              <TiltCard className="frost h-full rounded-2xl p-6" glare={false}>
-                <span className="font-mono text-4xl text-lime/40">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-4 text-lg font-semibold text-ice-050">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ice-300">{step.body}</p>
-              </TiltCard>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* Allowlist */}
-      <section id="allowlist" className="relative mx-auto max-w-6xl px-5 pb-20 sm:px-6 sm:pb-28">
-        <div className="frost overflow-hidden rounded-3xl">
-          <div className="relative h-28 sm:h-56">
-            <Image
-              src={BANNER}
-              alt="h00dguins banner"
-              fill
-              sizes="100vw"
-              className="object-cover opacity-80"
-              priority
-            />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-night-900 via-night-900/40 to-transparent"
-            />
+      {/* Allowlist call to action */}
+      <section className="relative mx-auto max-w-6xl px-5 pb-20 sm:px-6 sm:pb-28">
+        <div className="frost flex flex-col items-start gap-6 rounded-3xl p-6 sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-lime">Allowlist</p>
+            <h2 className="mt-3 text-[clamp(1.75rem,7vw,2.25rem)] font-semibold tracking-tight text-ice-050">
+              Get on the ice
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ice-300">
+              Finish the tasks, submit your wallet, and you get a ticket with your number in line.
+              Every entry is reviewed before the list is published.
+            </p>
           </div>
-
-          <div className="grid gap-8 p-4 sm:gap-10 sm:p-10 lg:grid-cols-2">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-lime">
-                Allowlist
-              </p>
-              <h2 className="mt-3 text-[clamp(1.75rem,7vw,2.25rem)] font-semibold tracking-tight text-ice-050 sm:text-4xl">
-                Get on the ice
-              </h2>
-              <p className="mt-4 text-sm leading-relaxed text-ice-300">
-                Reserve one of {COLLECTION.supply} guins on {COLLECTION.chain}. Wallet only. The
-                handle and email are so we can reach you when the mint window opens.
-              </p>
-              <div className="animate-drift mt-8 hidden lg:block">
-                <div className="frost relative h-44 w-44 overflow-hidden rounded-3xl">
-                  <Image src={ART[2]} alt="" fill sizes="176px" className="object-cover" />
-                </div>
-              </div>
-            </div>
-
-            <div className="frost rounded-2xl p-4 sm:p-6">
-              <AllowlistForm initialTotal={total} />
-            </div>
-          </div>
+          <Link
+            href="/allowlist"
+            className="w-full rounded-xl bg-lime px-8 py-4 text-center text-sm font-semibold text-night-900 transition hover:brightness-110 lg:w-auto"
+          >
+            Enter the allowlist
+          </Link>
         </div>
       </section>
 
       <footer className="border-t border-ice-100/10 py-10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 text-center text-xs text-ice-500 sm:flex-row sm:px-6 sm:text-left">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-center text-xs text-ice-500 sm:flex-row sm:px-6 sm:text-left">
           <span className="font-mono uppercase tracking-[0.25em]">h00dguins</span>
+          <div className="flex items-center gap-5">
+            <a className="transition hover:text-ice-100" href={LINKS.x} target="_blank" rel="noreferrer">
+              X
+            </a>
+            <a
+              className="transition hover:text-ice-100"
+              href={LINKS.opensea}
+              target="_blank"
+              rel="noreferrer"
+            >
+              OpenSea
+            </a>
+          </div>
           <span>
             {COLLECTION.supply} supply on {COLLECTION.chain}
           </span>
