@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-import { ART, TOKEN } from "@/lib/collection";
+import { TOKEN } from "@/lib/collection";
 
 /** How long each chapter holds before the story advances. */
 const DWELL = 5200;
@@ -162,7 +162,7 @@ export default function TokenStory() {
                     }`}
                   >
                     <Image
-                      src={ART[index % ART.length]}
+                      src={entry.image}
                       alt=""
                       fill
                       sizes="192px"

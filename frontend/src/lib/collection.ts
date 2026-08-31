@@ -47,7 +47,7 @@ export const TOKEN = {
   ticker: "$RPENG",
   kicker: "Coming after mint",
   tagline: "The token powering The Cold Block.",
-  body: `After the H00dguins mint, $RPENG will introduce a new layer to the ecosystem through H00dguin staking, rewards, character progression, ecosystem access and future experiences.`,
+  body: `After the H00dguins mint, $RPENG will introduce a new layer to The Cold Block through H00dguin staking, character progression, ecosystem access and future experiences.`,
   loop: ["Hold", "Stake", "Earn", "Upgrade"],
   footnote:
     "Full $RPENG mechanics and tokenomics will be announced after mint and before token activation.",
@@ -57,26 +57,30 @@ export const TOKEN = {
     {
       id: "hold",
       title: "Hold",
-      line: "Keep your guin in the wallet you minted from.",
-      body: "Holding is the entry ticket. Every layer that follows reads from the guins you actually hold.",
+      line: "Hold a H00dguin in your wallet.",
+      body: "Ownership is the entry point. The ecosystem recognizes the H00dguins currently held in your wallet.",
+      image: "/Untitled685_20260822035755.png",
     },
     {
       id: "stake",
       title: "Stake",
       line: "Send your guin into The Cold Block.",
       body: "Staked guins go to work on the ice. They stay yours the whole time, just busier.",
+      image: "/Untitled691_20260825055930.png",
     },
     {
       id: "earn",
       title: "Earn",
       line: "Staked guins accrue $RPENG.",
       body: "The longer the winter runs, the deeper the reserve you build up.",
+      image: "/Untitled704_20260829043518.png",
     },
     {
       id: "upgrade",
       title: "Upgrade",
       line: "Spend it on progression and access.",
       body: "Character progression, ecosystem access, and the experiences that come after.",
+      image: "/Untitled684_20260822032624.png",
     },
   ],
 } as const;
