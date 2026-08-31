@@ -7,7 +7,7 @@ import LiveFeed from "@/components/LiveFeed";
 import TiltCard from "@/components/TiltCard";
 import TokenStory from "@/components/TokenStory";
 import SceneMount from "@/components/three/SceneMount";
-import { ART, COLLECTION, LINKS, TOKEN } from "@/lib/collection";
+import { ART, COLLECTION, LINKS, MINT_OPEN, TOKEN } from "@/lib/collection";
 
 const FACTS = [
   { label: "Supply", value: COLLECTION.supply.toLocaleString(), note: "guins drawn by hand" },
@@ -81,13 +81,32 @@ export default function Home() {
               >
                 Claim your spot
               </Link>
+              {MINT_OPEN ? (
+                <a
+                  href={LINKS.mint}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl border border-lime/50 bg-lime/10 px-6 py-4 text-center text-sm font-semibold text-lime transition hover:bg-lime/20 sm:py-3.5"
+                >
+                  Mint now
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="Minting opens after the allowlist review"
+                  className="cursor-not-allowed rounded-xl border border-ice-100/15 px-6 py-4 text-center text-sm font-semibold text-ice-500 sm:py-3.5"
+                >
+                  Mint · Soon
+                </button>
+              )}
               <a
-                href={LINKS.mint}
+                href={LINKS.opensea}
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-xl border border-ice-100/20 px-6 py-4 text-center text-sm font-semibold text-ice-100 transition hover:border-ice-100/50 hover:bg-ice-100/5 sm:py-3.5"
               >
-                Mint on OpenSea
+                View on OpenSea
               </a>
             </div>
 

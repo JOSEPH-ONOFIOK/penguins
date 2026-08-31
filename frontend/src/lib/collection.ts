@@ -11,6 +11,9 @@ export const COLLECTION = {
  * Outbound links. Swap the placeholders once the real destinations exist:
  * OpenSea needs the collection slug, and mint points at the OpenSea drop for now.
  */
+/** Flip to true on launch day to turn the mint button into a live link. */
+export const MINT_OPEN = false;
+
 export const LINKS = {
   x: "https://x.com/hoodguins",
   opensea: "https://opensea.io/",
