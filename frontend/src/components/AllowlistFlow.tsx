@@ -21,7 +21,6 @@ export default function AllowlistFlow() {
   const [done, setDone] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [handle, setHandle] = useState("");
-  const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const allDone = TASKS.every((task) => done.includes(task.id));
@@ -40,7 +39,7 @@ export default function AllowlistFlow() {
       const response = await fetch("/api/allowlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address, handle, email, tasks: done }),
+        body: JSON.stringify({ address, handle, tasks: done }),
       });
       const data = await response.json();
 
@@ -163,20 +162,6 @@ export default function AllowlistFlow() {
               spellCheck={false}
               autoComplete="off"
               required
-            />
-          </label>
-
-          <label className="flex flex-col gap-2">
-            <span className="text-[11px] uppercase tracking-[0.22em] text-ice-300">
-              Email <span className="text-ice-500">(optional)</span>
-            </span>
-            <input
-              className={inputClass}
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
-              autoComplete="email"
             />
           </label>
         </div>

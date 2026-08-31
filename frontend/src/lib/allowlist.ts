@@ -8,7 +8,6 @@ export type AllowlistEntry = {
   position: number;
   address: string;
   handle: string | null;
-  email: string | null;
   tasks: string[];
   /** Entries are reviewed by hand, so nothing is confirmed on submission. */
   status: "pending";
@@ -18,7 +17,6 @@ export type AllowlistEntry = {
 export type SignupInput = {
   address?: unknown;
   handle?: unknown;
-  email?: unknown;
   tasks?: unknown;
 };
 
@@ -27,7 +25,6 @@ const DATA_FILE = path.join(DATA_DIR, "allowlist.json");
 
 const ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
 const HANDLE_RE = /^@?[A-Za-z0-9_]{1,15}$/;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export class ValidationError extends Error {
   field: string;
@@ -51,11 +48,6 @@ export function parseSignup(input: SignupInput): Omit<AllowlistEntry, "position"
     throw new ValidationError("handle", "Enter the X handle you completed the tasks with.");
   }
 
-  const rawEmail = typeof input.email === "string" ? input.email.trim() : "";
-  if (rawEmail && !EMAIL_RE.test(rawEmail)) {
-    throw new ValidationError("email", "Enter a valid email address.");
-  }
-
   const rawTasks = Array.isArray(input.tasks) ? input.tasks.filter((id) => typeof id === "string") : [];
   const missing = TASK_IDS.filter((id) => !rawTasks.includes(id));
   if (missing.length > 0) {
@@ -65,7 +57,6 @@ export function parseSignup(input: SignupInput): Omit<AllowlistEntry, "position"
   return {
     address: rawAddress.toLowerCase(),
     handle: rawHandle.replace(/^@/, "").toLowerCase(),
-    email: rawEmail ? rawEmail.toLowerCase() : null,
     tasks: [...TASK_IDS],
     status: "pending",
     createdAt: new Date().toISOString(),
