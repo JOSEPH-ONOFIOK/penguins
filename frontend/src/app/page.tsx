@@ -10,13 +10,6 @@ import TokenStory from "@/components/TokenStory";
 import SceneMount from "@/components/three/SceneMount";
 import { ART, COLLECTION, LINKS, MINT_OPEN, TOKEN } from "@/lib/collection";
 
-const FACTS = [
-  { label: "Supply", value: COLLECTION.supply.toLocaleString(), note: "guins drawn by hand" },
-  { label: "Chain", value: COLLECTION.chain, note: "EVM wallets welcome" },
-  { label: "Mint price", value: COLLECTION.mintPrice, note: "announced at reveal" },
-  { label: "Per wallet", value: `${COLLECTION.allowlistPerWallet} spot`, note: "one wallet, one guin" },
-];
-
 export default function Home() {
   return (
     <div className="relative z-10">
@@ -160,26 +153,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Facts and spinning cube */}
-      <section className="relative mx-auto max-w-6xl px-5 pb-16 sm:px-6 sm:pb-24">
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-12">
-          <div className="grid grid-cols-2 gap-3 sm:gap-5">
-            {FACTS.map((fact) => (
-              <TiltCard key={fact.label} className="frost h-full rounded-2xl p-4 sm:p-6" glare={false}>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-ice-500 sm:text-[11px] sm:tracking-[0.22em]">
-                  {fact.label}
-                </p>
-                <p className="mt-2 text-lg font-semibold text-ice-050 sm:mt-3 sm:text-2xl">
-                  {fact.value}
-                </p>
-                <p className="mt-1 text-xs text-ice-300">{fact.note}</p>
-              </TiltCard>
-            ))}
-          </div>
-          <div className="flex justify-center lg:pl-8">
-            <IceCube />
-          </div>
-        </div>
+      {/* Spinning cube */}
+      <section className="relative mx-auto flex max-w-6xl justify-center px-5 pb-16 sm:px-6 sm:pb-24">
+        <IceCube />
       </section>
 
       {/* Allowlist call to action */}
