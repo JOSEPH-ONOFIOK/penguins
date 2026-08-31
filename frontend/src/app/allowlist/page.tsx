@@ -7,7 +7,7 @@ import LiveFeed from "@/components/LiveFeed";
 import { BANNER, COLLECTION } from "@/lib/collection";
 
 export const metadata: Metadata = {
-  title: "h00dguins Allowlist",
+  title: "Allowlist",
   description: `Complete the tasks to enter for one of ${COLLECTION.supply} guins on ${COLLECTION.chain}.`,
 };
 

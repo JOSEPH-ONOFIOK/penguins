@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import Snowfall from "@/components/Snowfall";
@@ -15,14 +15,37 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description = `${COLLECTION.supply} hand-drawn penguins minting on ${COLLECTION.chain}. Complete the tasks to enter the allowlist.`;
+
+// Absolute URLs for share cards. Set NEXT_PUBLIC_SITE_URL to the live domain.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "h00dguins Allowlist",
-  description: `${COLLECTION.supply} hand-drawn penguins on ${COLLECTION.chain}. Claim your allowlist spot.`,
-  openGraph: {
-    title: "h00dguins Allowlist",
-    description: `${COLLECTION.supply} hand-drawn penguins on ${COLLECTION.chain}.`,
-    images: ["/1500x500.jpeg"],
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "h00dguins",
+    template: "%s · h00dguins",
   },
+  description,
+  applicationName: "h00dguins",
+  keywords: ["h00dguins", "NFT", "Robinhood Chain", "allowlist", "penguins", "$RPENG"],
+  openGraph: {
+    type: "website",
+    siteName: "h00dguins",
+    title: "h00dguins",
+    description,
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "h00dguins",
+    description,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#050a1c",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
