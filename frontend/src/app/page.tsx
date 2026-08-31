@@ -107,14 +107,14 @@ export default function Home() {
       <section id="collection" className="relative mx-auto max-w-6xl px-5 pb-16 sm:px-6 sm:pb-24">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-lime">The colony</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-lime">The cold block</p>
             <h2 className="mt-3 text-[clamp(1.75rem,7vw,2.25rem)] font-semibold tracking-tight text-ice-050 sm:text-4xl">
-              {COLLECTION.supply} guins, one glacier
+              {COLLECTION.supply.toLocaleString()} guins. One frozen block.
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ice-300">
-            Every guin is drawn by hand. Hoods, pirate hats, gold drip, and a permanent squint.
-            Traits get colder the deeper you go.
+            Every H00dguin carries its own traits, fit and attitude from hoods and streetwear to
+            rare accessories and colder combinations. Different guins. Same H00d.
           </p>
         </div>
 
