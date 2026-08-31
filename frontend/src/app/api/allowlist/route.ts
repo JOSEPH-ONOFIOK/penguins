@@ -8,36 +8,56 @@ import {
   listEntries,
   parseSignup,
 } from "@/lib/allowlist";
+import { countSheetEntries, findSheetEntry, sheetUrl, submitToSheet } from "@/lib/sheet";
 
 /**
  * GET /api/allowlist            -> { total }
  * GET /api/allowlist?address=0x -> { total, listed, entry }
- * GET /api/allowlist?export=1   -> full list, requires x-admin-key when ALLOWLIST_ADMIN_KEY is set
+ * GET /api/allowlist?export=1   -> local list, requires x-admin-key when ALLOWLIST_ADMIN_KEY is set
+ *
+ * Entries live in the Google Sheet when GOOGLE_SHEETS_WEBAPP_URL is set, and in
+ * data/allowlist.json otherwise.
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const address = searchParams.get("address");
   const wantsExport = searchParams.get("export") === "1";
+  const sheet = sheetUrl();
 
   if (wantsExport) {
     const adminKey = process.env.ALLOWLIST_ADMIN_KEY;
     if (!adminKey || request.headers.get("x-admin-key") !== adminKey) {
       return NextResponse.json({ error: "Not authorized." }, { status: 401 });
     }
+    if (sheet) {
+      return NextResponse.json(
+        { error: "Entries live in the connected Google Sheet. Export from there." },
+        { status: 409 },
+      );
+    }
     const entries = await listEntries();
     return NextResponse.json({ total: entries.length, entries });
   }
 
-  if (address) {
-    const entry = await findEntry(address);
-    return NextResponse.json({
-      total: await countEntries(),
-      listed: entry !== null,
-      entry,
-    });
-  }
+  try {
+    if (address) {
+      if (sheet) {
+        const found = await findSheetEntry(sheet, address.trim().toLowerCase());
+        return NextResponse.json(found);
+      }
+      const entry = await findEntry(address);
+      return NextResponse.json({
+        total: await countEntries(),
+        listed: entry !== null,
+        entry,
+      });
+    }
 
-  return NextResponse.json({ total: await countEntries() });
+    return NextResponse.json({ total: sheet ? await countSheetEntries(sheet) : await countEntries() });
+  } catch (error) {
+    console.error("allowlist lookup failed", error);
+    return NextResponse.json({ total: 0 });
+  }
 }
 
 /** POST /api/allowlist. Submit an entry for review. Idempotent per wallet. */
@@ -49,9 +69,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Expected a JSON body." }, { status: 400 });
   }
 
+  let parsed;
   try {
-    const parsed = parseSignup((body ?? {}) as Record<string, unknown>);
-    const { created, entry, total } = await addEntry(parsed);
+    parsed = parseSignup((body ?? {}) as Record<string, unknown>);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return NextResponse.json({ error: error.message, field: error.field }, { status: 400 });
+    }
+    throw error;
+  }
+
+  const sheet = sheetUrl();
+
+  try {
+    const { created, entry, total } = sheet
+      ? await submitToSheet(sheet, parsed)
+      : await addEntry(parsed);
+
     return NextResponse.json(
       {
         created,
@@ -66,10 +100,10 @@ export async function POST(request: Request) {
       { status: created ? 201 : 200 },
     );
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return NextResponse.json({ error: error.message, field: error.field }, { status: 400 });
-    }
     console.error("allowlist signup failed", error);
-    return NextResponse.json({ error: "Something went wrong. Try again." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Could not reach the allowlist. Try again in a sec." },
+      { status: 502 },
+    );
   }
 }
