@@ -9,6 +9,7 @@ import {
   parseSignup,
 } from "@/lib/allowlist";
 import { countSheetEntries, findSheetEntry, sheetUrl, submitToSheet } from "@/lib/sheet";
+import { OAUTH_COOKIE } from "@/lib/x-auth";
 
 /**
  * GET /api/allowlist            -> { total }
@@ -69,9 +70,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Expected a JSON body." }, { status: 400 });
   }
 
+  // A handle verified through the X connect flow wins over the posted one, so
+  // a crafted request cannot claim someone else's account.
+  const verifiedHandle = request.headers
+    .get("cookie")
+    ?.split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${OAUTH_COOKIE.handle}=`))
+    ?.slice(OAUTH_COOKIE.handle.length + 1);
+
+  const input = { ...((body ?? {}) as Record<string, unknown>) };
+  if (verifiedHandle) {
+    input.handle = decodeURIComponent(verifiedHandle);
+  }
+
   let parsed;
   try {
-    parsed = parseSignup((body ?? {}) as Record<string, unknown>);
+    parsed = parseSignup(input);
   } catch (error) {
     if (error instanceof ValidationError) {
       return NextResponse.json({ error: error.message, field: error.field }, { status: 400 });
