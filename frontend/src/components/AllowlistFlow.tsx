@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 
 import Ticket from "@/components/Ticket";
-import { COLLECTION } from "@/lib/collection";
 import { TASKS } from "@/lib/tasks";
 
 type Submitted = { position: number; address: string; handle: string | null };
@@ -212,7 +211,7 @@ export default function AllowlistFlow() {
         >
           <label className="flex flex-col gap-2">
             <span className="text-[11px] uppercase tracking-[0.22em] text-ice-300">
-              {COLLECTION.chain} wallet
+              EVM wallet
             </span>
             <input
               className={`${inputClass} font-mono`}
