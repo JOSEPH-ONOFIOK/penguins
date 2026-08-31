@@ -15,7 +15,7 @@ type Status =
   | { kind: "done"; entry: Submitted; message: string };
 
 const inputClass =
-  "w-full rounded-xl border border-ice-100/20 bg-night-900/60 px-4 py-3 text-sm text-ice-050 placeholder:text-ice-500/70 outline-none transition focus:border-lime/60 focus:bg-night-900/80 focus:shadow-[0_0_0_3px_rgba(201,255,61,0.12)]";
+  "w-full rounded-xl border border-ice-100/20 bg-night-900/60 px-4 py-3 text-sm text-ice-050 placeholder:text-ice-500/70 outline-none transition focus:border-lime/60 focus:bg-night-900/80 focus:shadow-[0_0_0_3px_rgba(201,255,61,0.12)] disabled:cursor-not-allowed disabled:border-ice-100/10 disabled:bg-night-900/30 disabled:text-ice-500 disabled:placeholder:text-ice-500/30";
 
 export default function AllowlistFlow() {
   const [done, setDone] = useState<string[]>([]);
@@ -26,10 +26,10 @@ export default function AllowlistFlow() {
   const allDone = TASKS.every((task) => done.includes(task.id));
   const submitting = status.kind === "submitting";
 
-  const toggle = (id: string) =>
-    setDone((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
-    );
+  const runTask = (id: string, href: string) => {
+    window.open(href, "_blank", "noopener,noreferrer");
+    setDone((current) => (current.includes(id) ? current : [...current, id]));
+  };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -77,66 +77,68 @@ export default function AllowlistFlow() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
-      {/* Tasks */}
-      <ol className="space-y-3">
-        {TASKS.map((task, index) => {
-          const checked = done.includes(task.id);
-          return (
-            <li key={task.id}>
-              <div
-                className={`frost rounded-2xl p-4 transition ${
-                  checked ? "border-lime/40" : ""
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <button
-                    type="button"
-                    role="checkbox"
-                    aria-checked={checked}
-                    onClick={() => toggle(task.id)}
-                    className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border text-xs transition ${
-                      checked
-                        ? "border-lime bg-lime text-night-900"
-                        : "border-ice-100/30 text-transparent hover:border-ice-100/60"
+      {/* Tasks. Opening a task marks it done, mirroring the trials flow. */}
+      <div>
+        <ol className="space-y-2.5">
+          {TASKS.map((task, index) => {
+            const isDone = done.includes(task.id);
+            return (
+              <li key={task.id}>
+                <button
+                  type="button"
+                  onClick={() => runTask(task.id, task.href)}
+                  className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-[border-color,background-color,transform] duration-200 ease-out active:scale-[0.99] ${
+                    isDone
+                      ? "border-lime/50 bg-lime/10"
+                      : "border-ice-100/15 bg-ice-100/[0.03] hover:border-lime/30"
+                  }`}
+                >
+                  <span
+                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-full font-mono text-[11px] font-bold transition-colors duration-200 ${
+                      isDone ? "bg-lime text-night-900" : "bg-ice-100/10 text-ice-500"
                     }`}
                   >
-                    ✓
-                  </button>
+                    {isDone ? "✓" : String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-sm font-medium text-ice-050">{task.label}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
 
-                  <div className="min-w-0 flex-1">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-ice-500">
-                      Task {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <h3 className="mt-1 text-sm font-semibold text-ice-050">{task.title}</h3>
-                    <p className="mt-1 text-xs leading-relaxed text-ice-300">{task.detail}</p>
-                  </div>
-
-                  <a
-                    href={task.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => {
-                      if (!checked) toggle(task.id);
-                    }}
-                    className="shrink-0 rounded-lg border border-ice-100/20 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-ice-100 transition hover:border-lime/50 hover:text-lime"
-                  >
-                    {task.cta}
-                  </a>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+        <div className="mt-6 h-1.5 w-full overflow-hidden rounded-full bg-ice-100/10">
+          <div
+            className="h-full origin-left rounded-full bg-lime transition-transform duration-500 ease-out"
+            style={{ transform: `scaleX(${done.length / TASKS.length})` }}
+          />
+        </div>
+        <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.24em] text-ice-500">
+          {done.length} of {TASKS.length} done
+        </p>
+      </div>
 
       {/* Entry details */}
       <form onSubmit={handleSubmit} className="frost h-fit rounded-2xl p-5 sm:p-6">
-        <h3 className="text-sm font-semibold text-ice-050">Your entry</h3>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold text-ice-050">Your entry</h3>
+          {!allDone && (
+            <span className="shrink-0 rounded-full border border-ice-100/15 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ice-500">
+              Locked
+            </span>
+          )}
+        </div>
         <p className="mt-1 text-xs text-ice-300">
-          One entry per wallet. Every entry is reviewed before the list is published.
+          {allDone
+            ? "One entry per wallet. Every entry is reviewed before the list is published."
+            : `Finish all ${TASKS.length} tasks to unlock the entry form.`}
         </p>
 
-        <div className="mt-5 flex flex-col gap-4">
+        <div
+          className={`mt-5 flex flex-col gap-4 transition-opacity duration-300 ease-out ${
+            allDone ? "opacity-100" : "opacity-50"
+          }`}
+        >
           <label className="flex flex-col gap-2">
             <span className="text-[11px] uppercase tracking-[0.22em] text-ice-300">
               {COLLECTION.chain} wallet
@@ -148,6 +150,7 @@ export default function AllowlistFlow() {
               placeholder="0x0000000000000000000000000000000000000000"
               spellCheck={false}
               autoComplete="off"
+              disabled={!allDone}
               required
             />
           </label>
@@ -161,6 +164,7 @@ export default function AllowlistFlow() {
               placeholder="@h00dguins"
               spellCheck={false}
               autoComplete="off"
+              disabled={!allDone}
               required
             />
           </label>
