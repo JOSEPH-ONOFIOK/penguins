@@ -5,6 +5,7 @@ import ArtMarquee from "@/components/ArtMarquee";
 import IceCube from "@/components/IceCube";
 import LiveFeed from "@/components/LiveFeed";
 import TiltCard from "@/components/TiltCard";
+import TokenStory from "@/components/TokenStory";
 import SceneMount from "@/components/three/SceneMount";
 import { ART, COLLECTION, LINKS, TOKEN } from "@/lib/collection";
 
@@ -100,35 +101,7 @@ export default function Home() {
 
       <ArtMarquee />
 
-      {/* Post-mint token */}
-      <section id="rpeng" className="relative mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <TiltCard className="frost overflow-hidden rounded-3xl p-6 sm:p-10" glare={false}>
-          <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-ice-500">
-            {TOKEN.kicker}
-          </p>
-          <h2 className="mt-3 text-[clamp(2rem,9vw,3rem)] font-semibold tracking-tight text-lime">
-            {TOKEN.ticker}
-          </h2>
-          <p className="mt-4 text-lg text-ice-050">{TOKEN.tagline}</p>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ice-300">{TOKEN.body}</p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-2">
-            {TOKEN.loop.map((step, index) => (
-              <span key={step} className="flex items-center gap-2">
-                <span className="rounded-full border border-ice-100/15 bg-night-800/60 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-ice-100">
-                  {step}
-                </span>
-                {index < TOKEN.loop.length - 1 && <span className="text-ice-500">→</span>}
-              </span>
-            ))}
-          </div>
-
-          <p className="mt-8 max-w-2xl text-xs leading-relaxed text-ice-500">{TOKEN.footnote}</p>
-          <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.3em] text-lime/70">
-            {TOKEN.status}
-          </p>
-        </TiltCard>
-      </section>
+      <TokenStory />
 
       {/* Collection */}
       <section id="collection" className="relative mx-auto max-w-6xl px-5 pb-16 sm:px-6 sm:pb-24">

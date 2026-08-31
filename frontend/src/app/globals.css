@@ -12,6 +12,10 @@
   --lime: #c9ff3d;
   --lime-deep: #96ac2f;
 
+  /* Built-in easings are too soft; these carry the punch. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+
   --background: var(--night-900);
   --foreground: var(--ice-050);
 }
@@ -86,6 +90,17 @@ body {
   to { transform: rotateX(-18deg) rotateY(360deg); }
 }
 
+@keyframes story-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Blur bridges the two states so a crossfade reads as one object, not two. */
+@keyframes chapter-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); filter: blur(6px); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+
 @keyframes rise-in {
   from { opacity: 0; transform: translate3d(0, 24px, -40px) rotateX(8deg); }
   to { opacity: 1; transform: translate3d(0, 0, 0) rotateX(0deg); }
@@ -96,14 +111,23 @@ body {
 .animate-shimmer { animation: shimmer 3.5s ease-in-out infinite; }
 .animate-rise { animation: rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .animate-spin-cube { animation: spin-cube 18s linear infinite; }
+.animate-story-fill { animation: story-fill linear forwards; transform-origin: left center; }
+.animate-chapter { animation: chapter-in 420ms var(--ease-out-strong) both; }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-drift,
   .animate-marquee,
   .animate-shimmer,
   .animate-rise,
-  .animate-spin-cube {
+  .animate-spin-cube,
+  .animate-chapter {
     animation: none !important;
+  }
+
+  /* Keep the rail filled rather than animating it. */
+  .animate-story-fill {
+    animation: none !important;
+    transform: scaleX(1);
   }
 
   *,

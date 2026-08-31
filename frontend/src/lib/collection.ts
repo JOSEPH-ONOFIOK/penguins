@@ -22,12 +22,12 @@ export const LINKS = {
  * 1000 supply and should never appear in the collection previews.
  */
 export const ART = [
-  "/Untitled680_20260828072252.png",
   "/Untitled680_20260828083906.png",
   "/Untitled684_20260822032624.png",
   "/Untitled685_20260822035755.png",
   "/Untitled689_20260825053718.png",
   "/Untitled691_20260825055930.png",
+  "/Untitled704_20260829043518.png",
 ] as const;
 
 /** Downscaled WebP copies of the same art, used as WebGL textures. */
@@ -52,4 +52,31 @@ export const TOKEN = {
   footnote:
     "Full $RPENG mechanics and tokenomics will be announced after mint and before token activation.",
   status: "Coming soon",
+  /** Chapters of the post-mint story. Mechanics are indicative until tokenomics land. */
+  story: [
+    {
+      id: "hold",
+      title: "Hold",
+      line: "Keep your guin in the wallet you minted from.",
+      body: "Holding is the entry ticket. Every layer that follows reads from the guins you actually hold.",
+    },
+    {
+      id: "stake",
+      title: "Stake",
+      line: "Send your guin into The Cold Block.",
+      body: "Staked guins go to work on the ice. They stay yours the whole time, just busier.",
+    },
+    {
+      id: "earn",
+      title: "Earn",
+      line: "Staked guins accrue $RPENG.",
+      body: "The longer the winter runs, the deeper the reserve you build up.",
+    },
+    {
+      id: "upgrade",
+      title: "Upgrade",
+      line: "Spend it on progression and access.",
+      body: "Character progression, ecosystem access, and the experiences that come after.",
+    },
+  ],
 } as const;
