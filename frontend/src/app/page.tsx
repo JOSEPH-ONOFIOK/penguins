@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import ArtMarquee from "@/components/ArtMarquee";
+import { GlacierBand } from "@/components/GlacierStream";
 import IceCube from "@/components/IceCube";
 import LiveFeed from "@/components/LiveFeed";
 import TiltCard from "@/components/TiltCard";
@@ -118,6 +119,8 @@ export default function Home() {
       </section>
 
       <ArtMarquee />
+
+      <GlacierBand />
 
       <TokenStory />
 

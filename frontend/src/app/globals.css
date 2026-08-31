@@ -90,6 +90,13 @@ body {
   to { transform: rotateX(-18deg) rotateY(360deg); }
 }
 
+/* Constant motion, so linear timing and a long period. The band is twice the
+   viewport wide and shifts by exactly half itself, which loops seamlessly. */
+@keyframes stream-drift {
+  from { transform: translate3d(0, 0, 0) rotate(var(--tilt, -10deg)); }
+  to { transform: translate3d(-25%, 0, 0) rotate(var(--tilt, -10deg)); }
+}
+
 @keyframes story-fill {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
@@ -112,6 +119,7 @@ body {
 .animate-rise { animation: rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .animate-spin-cube { animation: spin-cube 18s linear infinite; }
 .animate-story-fill { animation: story-fill linear forwards; transform-origin: left center; }
+.animate-stream { animation: stream-drift linear infinite; will-change: transform; }
 .animate-chapter { animation: chapter-in 420ms var(--ease-out-strong) both; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -120,7 +128,8 @@ body {
   .animate-shimmer,
   .animate-rise,
   .animate-spin-cube,
-  .animate-chapter {
+  .animate-chapter,
+  .animate-stream {
     animation: none !important;
   }
 
