@@ -1,1 +1,1 @@
-h00dguins: 1000 hand-drawn penguins minting on Robinhood Chain.
+h00dguins: 1,000 hand-drawn penguins minting on Robinhood.

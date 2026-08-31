@@ -11,7 +11,7 @@ import { ART, COLLECTION, LINKS, TOKEN } from "@/lib/collection";
 
 const FACTS = [
   { label: "Supply", value: COLLECTION.supply.toLocaleString(), note: "guins drawn by hand" },
-  { label: "Chain", value: COLLECTION.chain, note: "minting on Robinhood" },
+  { label: "Chain", value: COLLECTION.chain, note: "EVM wallets welcome" },
   { label: "Mint price", value: COLLECTION.mintPrice, note: "announced at reveal" },
   { label: "Per wallet", value: `${COLLECTION.allowlistPerWallet} spot`, note: "one wallet, one guin" },
 ];
@@ -65,10 +65,14 @@ export default function Home() {
               h00d<span className="text-lime">guins</span>
             </h1>
 
-            <p className="mt-5 text-base leading-relaxed text-ice-300 sm:text-lg">
-              {COLLECTION.supply.toLocaleString()} ice cold penguins wintering on {COLLECTION.chain}.
-              Hoods up, sunglasses on, permanently unbothered. Claim a spot before the ice sets.
-            </p>
+            <div className="mt-5 space-y-3 text-base leading-relaxed text-ice-300 sm:text-lg">
+              <p>
+                {COLLECTION.supply.toLocaleString()} H00dguins from the coldest block on{" "}
+                {COLLECTION.chain}.
+              </p>
+              <p>Different traits. Different attitudes. Permanently unbothered.</p>
+              <p>Claim your spot in The Cold Block.</p>
+            </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   description,
   applicationName: "h00dguins",
-  keywords: ["h00dguins", "NFT", "Robinhood Chain", "allowlist", "penguins", "$RPENG"],
+  keywords: ["h00dguins", "NFT", "Robinhood", "allowlist", "penguins", "$RPENG"],
   openGraph: {
     type: "website",
     siteName: "h00dguins",

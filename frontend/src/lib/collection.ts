@@ -2,7 +2,7 @@
 export const COLLECTION = {
   name: "h00dguins",
   supply: 1000,
-  chain: "Robinhood Chain",
+  chain: "Robinhood",
   mintPrice: "TBA",
   allowlistPerWallet: 1,
 } as const;
