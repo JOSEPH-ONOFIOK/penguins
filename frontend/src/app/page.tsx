@@ -61,12 +61,7 @@ export default function Home() {
 
         <div className="relative mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-24">
           <div className="animate-rise max-w-xl text-balance">
-            <span className="inline-flex items-center gap-2 rounded-full border border-ice-100/15 bg-night-800/60 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.22em] text-ice-300">
-              <span className="animate-shimmer h-1.5 w-1.5 rounded-full bg-lime" />
-              Allowlist open on {COLLECTION.chain}
-            </span>
-
-            <h1 className="text-glow mt-6 text-[clamp(2.75rem,13vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-ice-050 sm:text-7xl">
+            <h1 className="text-glow text-[clamp(2.75rem,13vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-ice-050 sm:text-7xl">
               h00d<span className="text-lime">guins</span>
             </h1>
 
